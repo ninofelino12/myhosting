@@ -1,6 +1,6 @@
 import base64
 from flask import Flask, render_template,jsonify,request,redirect
-import xmltodict
+#import xmltodict
 from myclass import Felino
 # from tabulate import tabulate
 import urllib.request
@@ -45,7 +45,7 @@ def listrecord(model,listrecord,field):
 @app.route("/")
 def index():
     menu=""
-    menu+=menuodoo('Partner','http://127.0.0.1:5000/dataset/res.partner')
+    menu+=menuodoo('Partner','dataset/res.partner')
     menu+=menuodoo('Product','dataset/product.product')
     menu+=menuodoo('WareHouse','/addon')
     menu+=menuodoo('Addpns','http://127.0.0.1:5000/addon')

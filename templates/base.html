@@ -27,9 +27,9 @@
     <meta name="msapplication-navbutton-color" content="#875A7B" />
     <meta name="msapplication-TileColor" content="#875A7B" />
     <meta name="msapplication-TileImage" content="/web/static/img/mobile-icons/windows-144x144.png" />
-    <link rel="manifest" href="/static/manifest.json">
-    <script src="/static/serviceworker.js"></script>
-    <script src="/static/app.js"></script>
+    <link rel="manifest" href="static/manifest.json">
+    <script src="static/serviceworker.js"></script>
+    <script src="static/app.js"></script>
 
 
     <script type="text/javascript">
@@ -46,39 +46,19 @@
     </script>
 
 <script>
-    self.addEventListener('install', function(event) {
-      event.waitUntil(
-        caches.open('my-cache').then(function(cache) {
-          return cache.addAll([
-            '/',
-            '/index.html',
-            '/script.js',
-            '/style.css'
-          ]);
-        })
-      );
-    });
-    
-    self.addEventListener('fetch', function(event) {
-      event.respondWith(
-        caches.match(event.request).then(function(response) {
-          return response || fetch(event.request);
-        })
-      );
-    });
-    
+   
         </script>
 
-    <link type="text/css" rel="stylesheet" href="https://www.exxpandev.com/static/web.assets_common.min.css"
+    <link type="text/css" rel="stylesheet" href="static/web.assets_common.min.css"
         data-asset-bundle="web.assets_common" data-asset-version="a2b4c9e" />
-    <link type="text/css" rel="stylesheet" href="https://www.exxpandev.com/static/web.assets_backend.min.css"
+    <link type="text/css" rel="stylesheet" href="static/web.assets_backend.min.css"
         data-asset-bundle="web.assets_backend" data-asset-version="f18f955" />
 
-    <script type="text/javascript" src="https://www.exxpandev.com/static/web.assets_common.min.js"
+    <script type="text/javascript" src="static/web.assets_common.min.js"
         data-asset-bundle="web.assets_common" data-asset-version="a2b4c9e"></script>
-    <script type="text/javascript" src="https://www.exxpandev.com/static/web.assets_backend.min.js"
+    <script type="text/javascript" src="static/web.assets_backend.min.js"
         data-asset-bundle="web.assets_backend" data-asset-version="f18f955"></script>
-    <script type="text/javascript" src="https://www.exxpandev.com/static/web.assets_backend_prod_only.min.jss"
+    <script type="text/javascript" src="static/web.assets_backend_prod_only.min.jss"
         data-asset-bundle="web.assets_backend_prod_only" data-asset-version="6e7f40c"></script>
 <style>
     .loading-container {
@@ -92,6 +72,7 @@
   justify-content: center;
   align-items: center;
   z-index: 9999;
+  display: none;
 }
 
 .loading {
@@ -154,80 +135,13 @@
         </div>
     </div>
 </nav>
-<div class="loading-container" id="loadingContainer">
+<div class="loading-container" id="loadingContainer" style="display: none;">
     <div class="loading"></div>
   </div>
 <body class="o_content">
     <div id="o_content">Content</div>
-    <script>
-         hideLoading();
-        function geodoo1(url) {
-            fetch(url)
-                .then(response => response.json())
-                .then(jsonData => {
-                    // 1. Buat elemen tabel secara efisien
-                    const tabel = document.createElement('table');
-                    tabel.classList.add('o_list_table', 'table', 'table-sm', 'table-hover', 'position-relative', 'mb-0', 'o_list_table_ungrouped', 'table-striped');
-
-                    // 2. Bangun header tabel sekali
-                    const barisHeader = document.createElement('tr');
-                    for (const kunci in jsonData[0]) {
-                        const selHeader = document.createElement('th');
-                        selHeader.textContent = kunci;
-                        selHeader.style.width = '10px';
-                        barisHeader.appendChild(selHeader);
-                    }
-                    const thead = document.createElement('thead');
-                    thead.appendChild(barisHeader);
-                    tabel.appendChild(thead);
-
-                    // 3. Buat baris data secara massal
-                    const tbody = document.createElement('tbody');
-                    jsonData.forEach(item => {
-                        const barisData = document.createElement('tr');
-                        barisData.classList.add('o_data_row', 'o_row_draggable');
-                        item.forEach(nilai => {
-                            const selData = document.createElement('td');
-                            selData.classList.add('o_data_cell', 'cursor-pointer', 'o_field_cell', 'o_list_char', 'o_required_modifier');
-                            selData.textContent = nilai;
-                            barisData.appendChild(selData);
-                        });
-                        tbody.appendChild(barisData);
-                    });
-                    tabel.appendChild(tbody);
-
-                    // 4. Ganti konten dalam satu langkah
-                    document.getElementById('o_content').innerHTML = ''; // Hapus konten sebelumnya
-                    document.getElementById('o_content').appendChild(tabel);
-                });
-        }
-        function geodoo5(url) {
-
-            fetch(url).then(response => response.json()).then(jsonData => {
-                // Do something with the data
-                var htmlTable = '<table class="o_list_table table table-sm table-hover position-relative mb-0 o_list_table_ungrouped table-striped">';
-                htmlTable += `<thead><tr>`;
-                for (const key in jsonData[0]) { htmlTable += `<th style="width:10px">${key}</th>` }
-                htmlTable += `</thead></tr>`;
-                for (const item of jsonData) {
-                    htmlTable += `<tr class="o_data_row o_row_draggable">`
-                    for (const key in jsonData[0]) {
-                        htmlTable += `<td class="o_data_cell cursor-pointer o_field_cell o_list_char o_required_modifier">${item[key]}</td>`;
-                    }
-                    htmlTable += `</tr>`;
-
-                };
-                htmlTable += `</table>`;
-                document.getElementById('o_content').innerHTML = htmlTable;
-            });
-        }
-        // fetch('dataset/res.partner').then(response =>response.json())
-        // .then(jsonData =>
-        //     {
-        //         alert(jsonData)
-        //     }
-        // )
-    </script>
+ 
+    
     <main style="padding: 20px;">
         {{isi|safe}}
         {% block content %}
