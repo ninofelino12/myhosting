@@ -1,0 +1,10 @@
+{'jsonrpc': '2.0', 'id': 980590348, 
+'result': 
+
+{'uid': 2, 'is_system': True, 'is_admin': True, 'user_context': {'lang': 'en_US', 'tz': 'Asia/Bangkok', 'uid': 2
+        }, 'db': 'DEMO', 'server_version': '16.0-20240104', 'server_version_info': [
+            16,
+            0,
+            0, 'final',
+            0, ''
+        ], 'support_url': 'https: //www.odoo.com/buy', 'name': 'Administrator', 'username': 'admin', 'partner_display_name': 'Administrator', 'company_id': 1, 'partner_id': 3, 'web.base.url': 'http://203.194.112.105', 'active_ids_limit': 20000, 'profile_session': None, 'profile_collectors': None, 'profile_params': None, 'max_file_upload_size': 134217728, 'home_action_id': False, 'cache_hashes': {'translations': 'f5615f399e6af56b9027f2dd749ef762a572364a', 'load_menus': '95a5dd4f635b4991c820485ae1530bc762adab507991007923d527a3672073ec'}, 'currencies': {'1': {'symbol': '€', 'position': 'after', 'digits': [69, 2]}, '13': {'symbol': 'Rp', 'position': 'before', 'digits': [69, 2]}}, 'bundle_params': {'lang': 'en_US'}, 'user_companies': {'current_company': 1, 'allowed_companies': {'1': {'id': 1, 'name': 'Exxpandev Indonesia', 'sequence': 0}}}, 'show_effect': True, 'display_switch_company_menu': False, 'user_id': [2], 'max_time_between_keys_in_ms': 100, 'web_tours': [], 'tour_disable': False, 'notification_type': 'email', 'odoobot_initialized': True, 'iap_company_enrich': False}}

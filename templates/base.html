@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>Odoo</title>
+    <link type="image/x-icon" rel="shortcut icon" href="/web/static/img/favicon.ico" />
+    <script id="web.layout.odooscript" type="text/javascript">
+        var odoo = {
+            csrf_token: "3b7a741b17f3e9b5397fff0385846cb00869fe1eo1738727519",
+            debug: "1",
+        };
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+
+    <meta name="theme-color" content="#875A7B" />
+    <link rel="icon" sizes="192x192" href="/web/static/img/mobile-icons/android-192x192.png" />
+
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <link rel="apple-touch-icon" href="/web/static/img/mobile-icons/apple-152x152.png" />
+
+
+    <meta name="msapplication-navbutton-color" content="#875A7B" />
+    <meta name="msapplication-TileColor" content="#875A7B" />
+    <meta name="msapplication-TileImage" content="/web/static/img/mobile-icons/windows-144x144.png" />
+    <link rel="manifest" href="/static/manifest.json">
+    <script src="/static/serviceworker.js"></script>
+
+    <script type="text/javascript">
+        // odoo.__session_info__ = {"uid": 2, "is_system": true, "is_admin": true, "user_context": {"lang": "en_US", "tz": "Asia/Bangkok", "uid": 2}, "db": "DEMO", "server_version": "16.0-20240104", "server_version_info": [16, 0, 0, "final", 0, ""], "support_url": "https://www.odoo.com/buy", "name": "Administrator", "username": "admin", "partner_display_name": "Administrator", "company_id": 1, "partner_id": 3, "web.base.url": "http://203.194.112.105", "active_ids_limit": 20000, "profile_session": null, "profile_collectors": null, "profile_params": null, "max_file_upload_size": 134217728, "home_action_id": false, "cache_hashes": {"translations": "2503a7b0252d1c59377467986b4c2775d4c0ed02", "load_menus": "e2f3790a500f66e809054a653fb319d185d16f738f8fd8d3e41e91e32d100f09"}, "currencies": {"1": {"symbol": "\u20ac", "position": "after", "digits": [69, 2]}, "13": {"symbol": "Rp", "position": "before", "digits": [69, 2]}}, "bundle_params": {"lang": "en_US", "debug": "1"}, "user_companies": {"current_company": 1, "allowed_companies": {"1": {"id": 1, "name": "Exxpandev Indonesia", "sequence": 0}}}, "show_effect": true, "display_switch_company_menu": false, "user_id": [2], "max_time_between_keys_in_ms": 100, "web_tours": [], "tour_disable": false, "notification_type": "email", "odoobot_initialized": true, "iap_company_enrich": false};
+        // odoo.reloadMenus = () => fetch(`/web/webclient/load_menus/${odoo.__session_info__.cache_hashes.load_menus}`).then(res => res.json());
+        // odoo.loadMenusPromise = odoo.reloadMenus();
+        // // Block to avoid leaking variables in the script scope
+        // {
+        //     const { user_context,  cache_hashes } = odoo.__session_info__;
+        //     // Prefetch translations to speedup webclient. This is done in JS because link rel="prefetch"
+        //     // is not yet supported on safari.
+        //     fetch(`/web/webclient/translations/${cache_hashes.translations}?lang=${user_context.lang}`);
+        // }
+    </script>
+
+<script>
+    self.addEventListener('install', function(event) {
+      event.waitUntil(
+        caches.open('my-cache').then(function(cache) {
+          return cache.addAll([
+            '/',
+            '/index.html',
+            '/script.js',
+            '/style.css'
+          ]);
+        })
+      );
+    });
+    
+    self.addEventListener('fetch', function(event) {
+      event.respondWith(
+        caches.match(event.request).then(function(response) {
+          return response || fetch(event.request);
+        })
+      );
+    });
+    
+        </script>
+
+    <link type="text/css" rel="stylesheet" href="https://www.exxpandev.com/static/web.assets_common.min.css"
+        data-asset-bundle="web.assets_common" data-asset-version="a2b4c9e" />
+    <link type="text/css" rel="stylesheet" href="https://www.exxpandev.com/static/web.assets_backend.min.css"
+        data-asset-bundle="web.assets_backend" data-asset-version="f18f955" />
+
+    <script type="text/javascript" src="https://www.exxpandev.com/static/web.assets_common.min.js"
+        data-asset-bundle="web.assets_common" data-asset-version="a2b4c9e"></script>
+    <script type="text/javascript" src="https://www.exxpandev.com/static/web.assets_backend.min.js"
+        data-asset-bundle="web.assets_backend" data-asset-version="f18f955"></script>
+    <script type="text/javascript" src="https://www.exxpandev.com/static/web.assets_backend_prod_only.min.jss"
+        data-asset-bundle="web.assets_backend_prod_only" data-asset-version="6e7f40c"></script>
+
+</head>
+<nav class="o_main_navbar" data-command-category="navbar">
+    <div class="o-dropdown dropdown o_navbar_apps_menu o-dropdown--no-caret">
+        <button class="dropdown-toggle" title="Home Menu" data-hotkey="h" tabindex="0" aria-expanded="false">
+            <i class="oi oi-apps"></i></button>
+    </div><a class="dropdown-item o_menu_brand d-none d-md-block" role="menuitem" tabindex="0"
+        href="#menu_id=332&amp;action=518" data-menu-xmlid="stock.menu_stock_root" data-section="332">Inventory</a>
+    {{menu|safe}}
+ </div>
+
+    <div class="o_menu_systray d-flex flex-shrink-0 ms-auto" role="menu">
+        <div></div>
+        <div class="o-dropdown dropdown o_debug_manager o-dropdown--no-caret"><button
+                class="dropdown-toggle o-dropdown--narrow" tabindex="0" aria-expanded="false"><i class="fa fa-bug"
+                    role="img" aria-label="Open developer tools"></i></button></div>
+        <div></div>
+        <div class="CallSystrayMenuContainer">
+            <div class="o_CallSystrayMenu dropdown">
+                <div class="o_CallInviteRequestPopupList position-absolute top-0 end-0 d-flex flex-column p-2"></div>
+            </div>
+        </div>
+        <div></div>
+        <div class="MessagingMenuContainer">
+            <div class="o_MessagingMenu dropdown"><a
+                    class="o_MessagingMenu_toggler dropdown-toggle o-no-caret o-dropdown--narrow o-no-notification"
+                    href="#" title="Conversations" role="button" aria-haspopup="true" aria-expanded="false"><i
+                        class="o_MessagingMenu_icon fa fa-lg fa-comments" role="img" aria-label="Messages"></i></a>
+            </div>
+        </div>
+        <div></div>
+        <div class="o_ActivityMenuView dropdown"><a
+                class="o_ActivityMenuView_dropdownToggle dropdown-toggle o-no-caret o-dropdown--narrow"
+                title="Activities" href="#" role="button" aria-expanded="false"><i class="fa fa-lg fa-clock-o"
+                    role="img" aria-label="Activities"></i> </a></div>
+        <div></div>
+        <div><button class="o_mobile_menu_toggle o-no-caret d-md-none border-0" title="Toggle menu"
+                aria-label="Toggle menu"><i class="oi oi-panel-right"></i></button></div>
+        <div></div>
+        <div class="o-dropdown dropdown o_user_menu d-none d-md-block pe-0 o-dropdown--no-caret"><button
+                class="dropdown-toggle py-1 py-lg-0" tabindex="0" aria-expanded="false"><img
+                    class="rounded-circle o_user_avatar h-75 py-1" alt="User"
+                    src="http://203.194.112.105/web/image?model=res.users&amp;field=avatar_128&amp;id=2"><span
+                    class="oe_topbar_name d-none d-lg-block ms-1 text-truncate">Administrator (DEMO)</span></button>
+        </div>
+    </div>
+</nav>
+
+<body class="o_content">
+    <div id="o_content">Content</div>
+    <script>
+        function geodoo1(url) {
+            fetch(url)
+                .then(response => response.json())
+                .then(jsonData => {
+                    // 1. Buat elemen tabel secara efisien
+                    const tabel = document.createElement('table');
+                    tabel.classList.add('o_list_table', 'table', 'table-sm', 'table-hover', 'position-relative', 'mb-0', 'o_list_table_ungrouped', 'table-striped');
+
+                    // 2. Bangun header tabel sekali
+                    const barisHeader = document.createElement('tr');
+                    for (const kunci in jsonData[0]) {
+                        const selHeader = document.createElement('th');
+                        selHeader.textContent = kunci;
+                        selHeader.style.width = '10px';
+                        barisHeader.appendChild(selHeader);
+                    }
+                    const thead = document.createElement('thead');
+                    thead.appendChild(barisHeader);
+                    tabel.appendChild(thead);
+
+                    // 3. Buat baris data secara massal
+                    const tbody = document.createElement('tbody');
+                    jsonData.forEach(item => {
+                        const barisData = document.createElement('tr');
+                        barisData.classList.add('o_data_row', 'o_row_draggable');
+                        item.forEach(nilai => {
+                            const selData = document.createElement('td');
+                            selData.classList.add('o_data_cell', 'cursor-pointer', 'o_field_cell', 'o_list_char', 'o_required_modifier');
+                            selData.textContent = nilai;
+                            barisData.appendChild(selData);
+                        });
+                        tbody.appendChild(barisData);
+                    });
+                    tabel.appendChild(tbody);
+
+                    // 4. Ganti konten dalam satu langkah
+                    document.getElementById('o_content').innerHTML = ''; // Hapus konten sebelumnya
+                    document.getElementById('o_content').appendChild(tabel);
+                });
+        }
+        function geodoo(url) {
+
+            fetch(url).then(response => response.json()).then(jsonData => {
+                // Do something with the data
+                var htmlTable = '<table class="o_list_table table table-sm table-hover position-relative mb-0 o_list_table_ungrouped table-striped">';
+                htmlTable += `<thead><tr>`;
+                for (const key in jsonData[0]) { htmlTable += `<th style="width:10px">${key}</th>` }
+                htmlTable += `</thead></tr>`;
+                for (const item of jsonData) {
+                    htmlTable += `<tr class="o_data_row o_row_draggable">`
+                    for (const key in jsonData[0]) {
+                        htmlTable += `<td class="o_data_cell cursor-pointer o_field_cell o_list_char o_required_modifier">${item[key]}</td>`;
+                    }
+                    htmlTable += `</tr>`;
+
+                };
+                htmlTable += `</table>`;
+                document.getElementById('o_content').innerHTML = htmlTable;
+            });
+        }
+        // fetch('dataset/res.partner').then(response =>response.json())
+        // .then(jsonData =>
+        //     {
+        //         alert(jsonData)
+        //     }
+        // )
+    </script>
+    <main style="padding: 20px;">
+        {{isi|safe}}
+        {% block content %}
+
+        {% endblock %}
+    </main>
+</body>
+
+</html>

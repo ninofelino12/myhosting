@@ -1,0 +1,11 @@
+Metadata-Version: 1.2
+Name: felino
+Version: 0.1.0
+Summary: Deskripsi singkat tentang package
+Home-page: https://github.com/username/nama_package
+Author: Nama Anda
+Author-email: email@anda.com
+License: UNKNOWN
+Description: UNKNOWN
+Platform: UNKNOWN
+Requires-Python: >=3.6

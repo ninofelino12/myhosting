@@ -1,0 +1,15 @@
+{
+  "background_color": "purple",
+  "description": "Odoo Customs Client",
+  "display": "fullscreen",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ],
+  "name": "OdooClient",
+  "short_name": "Odoo",
+  "start_url": "/"
+}

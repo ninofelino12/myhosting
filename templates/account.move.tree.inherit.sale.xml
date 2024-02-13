@@ -1,0 +1,5 @@
+<field name="invoice_user_id" position="after">
+    <field name="team_id"
+        invisible="context.get('default_move_type') not in ('out_invoice', 'out_refund','out_receipt')"
+        optional="hide" />
+</field>

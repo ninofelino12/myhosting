@@ -1,0 +1,7 @@
+setup.py
+felino/felino.py
+felino.egg-info/PKG-INFO
+felino.egg-info/SOURCES.txt
+felino.egg-info/dependency_links.txt
+felino.egg-info/requires.txt
+felino.egg-info/top_level.txt
