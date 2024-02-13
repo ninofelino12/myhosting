@@ -29,6 +29,8 @@
     <meta name="msapplication-TileImage" content="/web/static/img/mobile-icons/windows-144x144.png" />
     <link rel="manifest" href="/static/manifest.json">
     <script src="/static/serviceworker.js"></script>
+    <script src="/static/app.js"></script>
+
 
     <script type="text/javascript">
         // odoo.__session_info__ = {"uid": 2, "is_system": true, "is_admin": true, "user_context": {"lang": "en_US", "tz": "Asia/Bangkok", "uid": 2}, "db": "DEMO", "server_version": "16.0-20240104", "server_version_info": [16, 0, 0, "final", 0, ""], "support_url": "https://www.odoo.com/buy", "name": "Administrator", "username": "admin", "partner_display_name": "Administrator", "company_id": 1, "partner_id": 3, "web.base.url": "http://203.194.112.105", "active_ids_limit": 20000, "profile_session": null, "profile_collectors": null, "profile_params": null, "max_file_upload_size": 134217728, "home_action_id": false, "cache_hashes": {"translations": "2503a7b0252d1c59377467986b4c2775d4c0ed02", "load_menus": "e2f3790a500f66e809054a653fb319d185d16f738f8fd8d3e41e91e32d100f09"}, "currencies": {"1": {"symbol": "\u20ac", "position": "after", "digits": [69, 2]}, "13": {"symbol": "Rp", "position": "before", "digits": [69, 2]}}, "bundle_params": {"lang": "en_US", "debug": "1"}, "user_companies": {"current_company": 1, "allowed_companies": {"1": {"id": 1, "name": "Exxpandev Indonesia", "sequence": 0}}}, "show_effect": true, "display_switch_company_menu": false, "user_id": [2], "max_time_between_keys_in_ms": 100, "web_tours": [], "tour_disable": false, "notification_type": "email", "odoobot_initialized": true, "iap_company_enrich": false};
@@ -78,7 +80,34 @@
         data-asset-bundle="web.assets_backend" data-asset-version="f18f955"></script>
     <script type="text/javascript" src="https://www.exxpandev.com/static/web.assets_backend_prod_only.min.jss"
         data-asset-bundle="web.assets_backend_prod_only" data-asset-version="6e7f40c"></script>
+<style>
+    .loading-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
 
+.loading {
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid #3498db;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
 </head>
 <nav class="o_main_navbar" data-command-category="navbar">
     <div class="o-dropdown dropdown o_navbar_apps_menu o-dropdown--no-caret">
@@ -125,10 +154,13 @@
         </div>
     </div>
 </nav>
-
+<div class="loading-container" id="loadingContainer">
+    <div class="loading"></div>
+  </div>
 <body class="o_content">
     <div id="o_content">Content</div>
     <script>
+         hideLoading();
         function geodoo1(url) {
             fetch(url)
                 .then(response => response.json())
@@ -169,7 +201,7 @@
                     document.getElementById('o_content').appendChild(tabel);
                 });
         }
-        function geodoo(url) {
+        function geodoo5(url) {
 
             fetch(url).then(response => response.json()).then(jsonData => {
                 // Do something with the data

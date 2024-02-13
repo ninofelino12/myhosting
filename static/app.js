@@ -1,4 +1,5 @@
 function geodoo1(url) {
+    showLoading();
     fetch(url)
         .then(response => response.json())
         .then(jsonData => {
@@ -36,10 +37,11 @@ function geodoo1(url) {
             // 4. Ganti konten dalam satu langkah
             document.getElementById('o_content').innerHTML = ''; // Hapus konten sebelumnya
             document.getElementById('o_content').appendChild(tabel);
+            hideLoading();
         });
 }
 function geodoo(url) {
-
+    showLoading();;
     fetch(url).then(response => response.json()).then(jsonData => {
         // Do something with the data
         var htmlTable = '<table class="o_list_table table table-sm table-hover position-relative mb-0 o_list_table_ungrouped table-striped">';
@@ -56,5 +58,16 @@ function geodoo(url) {
         };
         htmlTable += `</table>`;
         document.getElementById('o_content').innerHTML = htmlTable;
+        hideLoading();
     });
 }
+
+function showLoading() {
+    document.getElementById("loadingContainer").style.display = "flex";
+  }
+  
+  // Membuat fungsi untuk menyembunyikan animasi loading
+  function hideLoading() {
+    document.getElementById("loadingContainer").style.display = "none";
+  }
+  
