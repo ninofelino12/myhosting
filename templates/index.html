@@ -1,9 +1,31 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h2>Homepage</h2>
-  <p>Welcome to my website!</p>
+
+<section>
+ 
+  <div class="o-main-components-container">
+    <h1>index</h1>
+    <div class="o_DialogManager">DIALOG</div>
+    <div class="o_ChatWindowManager flex-row-reverse d-flex"></div>
+    <div class="o_PopoverManager">PopoverManager</div>
+    <div class="o_effects_manager"></div>
+    <div class="o_dialog_container">
+      <div>o_dialog_container
+        <div id="o_content">Content</div>
+      </div>
+    </div>
+    <div class="o_notification_manager"></div>
+    <div></div>
+    <div class="o_notification_manager o_upload_progress_toast"></div>
+    <div class="o_popover_container"></div>
+    <div class="o_fullscreen_indication">
+      <p>Press <span>esc</span> to exit full screen</p>
+    </div>
+  </div>
+</section>
 {% endblock %}
+
 <script>
 
 

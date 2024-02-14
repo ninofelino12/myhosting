@@ -1,5 +1,6 @@
 from odoorpc import ODOO,rpc
 from pprint import pprint as pp
+import base64
 # from tabulate import tabulate
 
 import sqlite3
@@ -18,7 +19,7 @@ class Felino(ODOO):
         self.field=['id','name']
         self.lsrecord=[]
         self.search=[]
-        self.session=''
+        # self.session=''
         _name = 'my.model'
         self.odoo  =  ODOO ('203.194.112.105',  port = 80 )
         # self.odoo  =  ODOO ('sunber-digital.odoo.com',  port = 80 )
@@ -44,6 +45,8 @@ class Felino(ODOO):
 # Mengambil data JSON dari database
         cursor.execute("SELECT data FROM json_data")
         result = cursor.fetchone()
+    def logon(self):
+        self.odoo.login(self.database,self.user,self.password)
 
     def record(self):
         self.lsrecord=self.odoo.env[self.model].search(self.search);
@@ -75,6 +78,11 @@ class Felino(ODOO):
         report = self.odoo.report.download('account.report_invoice', [1])
         print(cetak)
         return cetak
+    def image(self,model,field,id):
+         result=self.odoo.execute(model, 'read',[int(id)],[field])
+         #gbr=base64.b64decode(result[0].get(field))
+         #return f'<img src="data:image/png;base64,{gbr} alt="Gambar">'
+         return result
     def addons(self):
         self.model='ir.module.module'
         self.field=['id','name','website','author','sequence','category_id','reports_by_module']
@@ -162,13 +170,13 @@ Using f-strings can make it easier to manage and format long strings"""
         print(my_dict)
         return hasil+'</div>'
         
-datas = Felino()
-datas.warehouse()
-datas.addons()
-datas.model='res.partner'
-datas.field=['id','name']
-datas.record()
-datas.listrecord()
+# datas = Felino()
+# datas.warehouse()
+# datas.addons()
+# datas.model='res.partner'
+# datas.field=['id','name']
+# datas.record()
+# datas.listrecord()
 #print('------------ My class')
 #print(datas.Datarecord())
 #print(datas.Datarecord(model="product.product"))

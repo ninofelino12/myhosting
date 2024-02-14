@@ -5,7 +5,12 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <title>Odoo</title>
-    <link type="image/x-icon" rel="shortcut icon" href="/web/static/img/favicon.ico" />
+    <link type="image/x-icon" rel="shortcut icon" href="static/img/favicon.ico" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <link rel="icon" href="{{ url_for('static', filename='icon.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <script id="web.layout.odooscript" type="text/javascript">
         var odoo = {
             csrf_token: "3b7a741b17f3e9b5397fff0385846cb00869fe1eo1738727519",
@@ -16,17 +21,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 
     <meta name="theme-color" content="#875A7B" />
-    <link rel="icon" sizes="192x192" href="/web/static/img/mobile-icons/android-192x192.png" />
+    <link rel="icon" sizes="192x192" href="static/img/mobile-icons/android-192x192.png" />
 
 
-    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mob<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.2/css/fontawesome.min.css" integrity="sha384-BY+fdrpOd3gfeRvTSMT+VUZmA728cfF9Z2G42xpaRkUGu2i3DyzpTURDo5A6CaLK" crossorigin="anonymous">
+    
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-    <link rel="apple-touch-icon" href="/web/static/img/mobile-icons/apple-152x152.png" />
+    <link rel="apple-touch-icon" href="static/img/mobile-icons/apple-152x152.png" />
 
 
     <meta name="msapplication-navbutton-color" content="#875A7B" />
     <meta name="msapplication-TileColor" content="#875A7B" />
-    <meta name="msapplication-TileImage" content="/web/static/img/mobile-icons/windows-144x144.png" />
+    <meta name="msapplication-TileImage" content="static/img/mobile-icons/windows-144x144.png" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
     <link rel="manifest" href="static/manifest.json">
     <script src="static/serviceworker.js"></script>
     <script src="static/app.js"></script>
@@ -44,9 +52,40 @@
         //     fetch(`/web/webclient/translations/${cache_hashes.translations}?lang=${user_context.lang}`);
         // }
     </script>
+     <script>
+      if ('serviceWorker' in navigator) {
+          window.addEventListener('load', function() {
+              navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
+                  console.log('ServiceWorker registration successful with scope: ', registration.scope);
+              }, function(err) {
+                  console.log('ServiceWorker registration failed: ', err);
+              });
+          });
+      }
+  </script>
 
 <script>
-   
+  
+   self.addEventListener('install', function(event) {
+    event.waitUntil(
+      caches.open('my-cache').then(function(cache) {
+        return cache.addAll([
+          '/',
+          '/index.html',
+          '/script.js',
+          '/style.css'
+        ]);
+      })
+    );
+  });
+  
+  self.addEventListener('fetch', function(event) {
+    event.respondWith(
+      caches.match(event.request).then(function(response) {
+        return response || fetch(event.request);
+      })
+    );
+  });
         </script>
 
     <link type="text/css" rel="stylesheet" href="static/web.assets_common.min.css"
@@ -54,16 +93,16 @@
     <link type="text/css" rel="stylesheet" href="static/web.assets_backend.min.css"
         data-asset-bundle="web.assets_backend" data-asset-version="f18f955" />
 
-    <script type="text/javascript" src="static/web.assets_common.min.js"
+    <script type="text/javascript" src="static/web.assets_common.min.jss"
         data-asset-bundle="web.assets_common" data-asset-version="a2b4c9e"></script>
-    <script type="text/javascript" src="static/web.assets_backend.min.js"
+    <script type="text/javascript" src="static/web.assets_backend.min.jss"
         data-asset-bundle="web.assets_backend" data-asset-version="f18f955"></script>
     <script type="text/javascript" src="static/web.assets_backend_prod_only.min.jss"
         data-asset-bundle="web.assets_backend_prod_only" data-asset-version="6e7f40c"></script>
 <style>
     .loading-container {
   position: fixed;
-  top: 0;
+  top: 20;
   left: 0;
   width: 100%;
   height: 100%;
@@ -121,7 +160,7 @@
         <div></div>
         <div class="o_ActivityMenuView dropdown"><a
                 class="o_ActivityMenuView_dropdownToggle dropdown-toggle o-no-caret o-dropdown--narrow"
-                title="Activities" href="#" role="button" aria-expanded="false"><i class="fa fa-lg fa-clock-o"
+                title="Activities" href="#" role="button" aria-expanded="false"><i class="fa fa-lg fa-clock"
                     role="img" aria-label="Activities"></i> </a></div>
         <div></div>
         <div><button class="o_mobile_menu_toggle o-no-caret d-md-none border-0" title="Toggle menu"
@@ -130,22 +169,23 @@
         <div class="o-dropdown dropdown o_user_menu d-none d-md-block pe-0 o-dropdown--no-caret"><button
                 class="dropdown-toggle py-1 py-lg-0" tabindex="0" aria-expanded="false"><img
                     class="rounded-circle o_user_avatar h-75 py-1" alt="User"
-                    src="http://203.194.112.105/web/image?model=res.users&amp;field=avatar_128&amp;id=2"><span
+                    src="image/res.users/avatar_128/2"><span
                     class="oe_topbar_name d-none d-lg-block ms-1 text-truncate">Administrator (DEMO)</span></button>
         </div>
     </div>
 </nav>
-<div class="loading-container" id="loadingContainer" style="display: none;">
-    <div class="loading"></div>
-  </div>
+
 <body class="o_content">
-    <div id="o_content">Content</div>
+    
  
     
     <main style="padding: 20px;">
+        <div class="loading-container" id="loadingContainer" style="display: none;">
+    <div class="loading"></div>
+    </div>
         {{isi|safe}}
         {% block content %}
-
+            block content
         {% endblock %}
     </main>
 </body>

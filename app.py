@@ -1,28 +1,22 @@
-import base64
-from flask import Flask, render_template,jsonify,request,redirect
-#import xmltodict
+from flask import Flask, Blueprint, render_template,jsonify,request,redirect,Response
 from myclass import Felino
-# from tabulate import tabulate
-import urllib.request
-
 import sqlite3
 import json
-
 import  odoorpc
+import base64
 
 
+
+#web_bp = Blueprint("web", __name__, static_folder='web', static_url_path="/static")
 app = Flask(__name__)
 app.config['STATIC_FOLDER'] = 'static'
 #app.jinja_env.add_static_folder('templates', 'static')
 
-odoo=Felino()
-# data = odoo.json('/web/session/authenticate',
-#    {'db': 'db_name', 'login': 'admin', 'password': 'admin'})
-# print(data)
 
-menu=[{"name":"Partner","url":"partner"}
-      
-      ]
+
+odoo=Felino()
+menu=[{"name":"Partner","url":"partner"}]
+#print(odoo.session)     
 
 def menuodoo(menu,url):
     content=f"""
@@ -42,15 +36,38 @@ def listrecord(model,listrecord,field):
     result=odoo.execute(model, 'read',listrecord,field) 
     return result
 
-@app.route("/")
-def index():
+@app.route("/home")
+def home():
     menu=""
     menu+=menuodoo('Partner','dataset/res.partner')
+    menu+=menuodoo('Product Category','dataset/product.category')
     menu+=menuodoo('Product','dataset/product.product')
-    menu+=menuodoo('WareHouse','/addon')
-    menu+=menuodoo('Addpns','http://127.0.0.1:5000/addon')
+    menu+=menuodoo('WareHouse','dataset/stock.warehouse')
+    menu+=menuodoo('Addons','dataset/ir.module.module')
+    menu+=menuodoo('Report','dataset/ir.actions.report')
+    menu+=menuodoo('View','dataset/ir.ui.view')
 
     return render_template("index.html",menu=menu)
+
+@app.route("/dashboard")
+def dasboard():
+    menu=""
+    menu+=menuodoo('Partner','dataset/res.partner')
+    menu+=menuodoo('Product Category','dataset/product.category')
+    menu+=menuodoo('Product','dataset/product.product')
+    menu+=menuodoo('WareHouse','dataset/stock.warehouse')
+    menu+=menuodoo('Addons','dataset/ir.module.module')
+    menu+=menuodoo('Report','dataset/ir.actions.report')
+    menu+=menuodoo('View','dataset/ir.ui.view')
+
+    return render_template("dashboard.html",menu=menu)
+
+
+@app.route("/")
+def index():
+    return '1'
+
+
 @app.route("/view")
 def view():
     id=1512
@@ -80,11 +97,16 @@ def addons():
 
 @app.route("/image/<model>/<field>/<id>")
 def image(model,field,id):
-    result=odoo.execute(model, 'read',[int(id)],[field])
-    #result=odoo.execute(model, 'read',record,[field])  
-    print(result)
-    gbr=base64.b64decode(result[0].get(field))
-    return f'<img src="data:image/png;base64,{gbr} alt="Gambar">'
+    gbr=odoo.image(model,field,id)
+    print(gbr)
+    if len(gbr)>0:
+       first_element = gbr[0]
+       avatar_128= first_element.get('avatar_128', '')
+       binary_image = base64.b64decode(avatar_128)
+       return Response(binary_image, mimetype='image/png')
+    else:
+        return "No Image"
+
     #return base64.b64decode(result[0].get(field))
 
 
@@ -98,7 +120,7 @@ def dataset(model):
    else:
         fields=['id','name']         
    search = request.args.get('search')  # Get `search` string
-
+    
    print(id)  
    odoo.model=model
    odoo.field=fields
@@ -128,5 +150,5 @@ def warehouse():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
 
