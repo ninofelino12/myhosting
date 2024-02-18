@@ -1,0 +1,42 @@
+res.partner:   
+     
+     Name: "Partner"  
+     Fields: 
+     - 'id'
+     - 'name'
+     - 'phone'
+     - 'mobile'
+     images:
+     - 'image_1920'
+product.product:   
+       
+     Name: "Partner"  
+     Fields: ['id','name','name']  
+product.category:
+      Fields:
+      - 'id'
+      - 'name'
+product.template:
+      Fields:
+      - 'id'
+      - 'name'
+      - 'categ_id'
+      - 'product_variant_count'
+      images:
+      - 'image_1920'
+stock.warehouse:
+     Fields:
+      - 'id'
+      - 'name'
+ir.module.module:
+      Fields:
+      - 'id'
+      - 'name'
+ir.actions.report:
+      Fields:
+      - 'id'
+      - 'name'
+ir.ui.view:
+ Fields:
+      - 'id'
+      - 'name'     

@@ -10,51 +10,47 @@ class Felino(ODOO):
 
     def __init__(self):
         #super().__init__()
-        self.odoo  =  ODOO('203.194.112.105',  port = 80 )
-
         self.model = 'res.partner'
         self.database ='DEMO'
         self.user='admin'
         self.password='odooadmin'
         self.field=['id','name']
+        self.images=''
         self.lsrecord=[]
         self.search=[]
-        # self.session=''
+        self.server='localhost'
+        self.porta=8015
         _name = 'my.model'
-        self.odoo  =  ODOO ('203.194.112.105',  port = 80 )
-        # self.odoo  =  ODOO ('sunber-digital.odoo.com',  port = 80 )
-        self.session=self.odoo.login(self.database,self.user,self.password)
-        print('---------------------------------------')
-        print(self.session)
-        print(self.odoo.db.list())
+        #self.odoo  =  ODOO ('203.194.112.105',  port = 80 )
+        #self.odoo  =  ODOO (self.server,  port = self.porta )
+       
         
-        # cnt = rpc.ConnectorJSONRPC('203.194.112.105', port=80)    
-        # info=cnt.proxy_json.web.session.authenticate(db=self.database, login=self.user, password=self.password)      
-        # info=info.get('result')
-        # print(info.get('web.base.url'))
         conn = sqlite3.connect('data.db')
         cursor = conn.cursor()
-        cursor.execute('''CREATE TABLE IF NOT EXISTS json_data
-                (id INTEGER PRIMARY KEY, data JSON)''')
-        data = {'name': 'John', 'age': 30, 'city': 'New York'}
-        cursor.execute("INSERT INTO json_data (data) VALUES (?)", (json.dumps(data),))
+        cursor.execute('''
+                CREATE TABLE IF NOT EXISTS json_data
+                (key  TEXT  PRIMARY KEY , data TEXT, yaml TEXT)
+                       ''')
+    def connect(self,server,port):
+        self.odoo  =  ODOO (server,  port = port ) 
+        print(self.odoo.db.list())
 
-        # Melakukan commit transaksi
-        conn.commit()
-
-# Mengambil data JSON dari database
-        cursor.execute("SELECT data FROM json_data")
-        result = cursor.fetchone()
     def logon(self):
         self.odoo.login(self.database,self.user,self.password)
 
     def record(self):
-        self.lsrecord=self.odoo.env[self.model].search(self.search);
+        self.lsrecord=self.odoo.env[self.model].search(self.search)
         return self.lsrecord
 
     def listrecord(self):
         # result=self.odoo.execute(self.model, 'read',
-        result=self.odoo.execute(self.model, 'read',self.lsrecord,self.field) 
+        result=self.odoo.execute(self.model, 'read',self.lsrecord,self.field)
+        if self.images !='':
+           print('ada')
+           print(self.images)  
+           for item in result:
+                item["img"] = f'<img src="image/'+f'{self.model}/{self.images}/{item["id"]}'+'">'
+                print( item["img"])    
         return result
 
     def Datarecord(self,**kwargs):
@@ -78,6 +74,21 @@ class Felino(ODOO):
         report = self.odoo.report.download('account.report_invoice', [1])
         print(cetak)
         return cetak
+    def safeJson(self,model,data):
+        conn = sqlite3.connect('data.db')
+        c = conn.cursor()
+        c.execute('REPLACE INTO json_data (data,key) VALUES (?,?)', (data,model))
+        conn.commit()
+        conn.close()
+    def getJson(self,model):
+        query = f'SELECT data FROM json_data WHERE key="{model}"'
+        conn = sqlite3.connect('data.db')
+        c = conn.cursor()
+        c.execute(query)
+        data = c.fetchone()
+        print(data[0])
+        conn.close()
+        return data[0]
     def image(self,model,field,id):
          result=self.odoo.execute(model, 'read',[int(id)],[field])
          #gbr=base64.b64decode(result[0].get(field))
@@ -100,9 +111,7 @@ class Felino(ODOO):
         #print(tabulate(my_dict,headers="keys"))
         return hasil
     def kanban(self,header,content):
-        formatted_text = f"""This is a very long string that spans multiple lines
-(It can be difficult to read and work with in Python code.)
-Using f-strings can make it easier to manage and format long strings"""
+        
 
         
         htm = f"""
@@ -160,12 +169,7 @@ Using f-strings can make it easier to manage and format long strings"""
         hasil='<div class="o_kanban_view oe_background_grey o_kanban_dashboard o_emphasize_colors o_stock_kanban o_kanban_ungrouped">'
         for item in my_dict:
             hasil+=self.kanban(item["location_id"],item["name"])
-            # hasil+=f'<div class="oe_kanban_color_0 o_kanban_record">'
-            # hasil+=f'<div class="oe_kanban_color_0 o_kanban_record">'
-            # hasil+=f'<div class="o_kanban_card_header">'
-            # hasil+=f'{item["location_id"]}</div>'
-            # hasil+=f'<div class="oe_kanban_action oe_kanban_action">'
-            # hasil+=f'{item["name"]}<a href="{item["id"]}">{item["name"]}</a><span>{item["name"]}</span></div></div></div>'
+            
         
         print(my_dict)
         return hasil+'</div>'
