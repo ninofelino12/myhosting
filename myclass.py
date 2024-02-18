@@ -29,7 +29,7 @@ class Felino(ODOO):
         cursor = conn.cursor()
         cursor.execute('''
                 CREATE TABLE IF NOT EXISTS json_data
-                (key  TEXT  PRIMARY KEY , data TEXT, yaml TEXT)
+                (key  TEXT  PRIMARY KEY ,name TEXT , data TEXT, yaml TEXT)
                        ''')
     def connect(self,server,port):
         self.odoo  =  ODOO (server,  port = port ) 
@@ -89,6 +89,16 @@ class Felino(ODOO):
         print(data[0])
         conn.close()
         return data[0]
+    
+    def rootJson(self):
+        query = f'SELECT key,name FROM json_data '
+        conn = sqlite3.connect('data.db')
+        c = conn.cursor()
+        c.execute(query)
+        data = c.fetchall()
+        conn.close()
+        return data
+    
     def image(self,model,field,id):
          result=self.odoo.execute(model, 'read',[int(id)],[field])
          #gbr=base64.b64decode(result[0].get(field))
