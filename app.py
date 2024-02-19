@@ -29,8 +29,8 @@ odoo=Felino()
   #self.odoo  =  ODOO ('203.194.112.105',  port = 80 )
         #self.odoo  =  ODOO (self.server,  port = self.porta )
 try:
-    odoo.connect('localhost',8015)
-    #odoo.connect('203.194.112.105',16000)
+    #odoo.connect('localhost',8015)
+    odoo.connect('203.194.112.105',16000)
     odoo.logon()
 except Exception as e:
     print("Connection error:", e)    
