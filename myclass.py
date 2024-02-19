@@ -50,6 +50,7 @@ class Felino(ODOO):
            print(self.images)  
            for item in result:
                 item["img"] = f'<img src="image/'+f'{self.model}/{self.images}/{item["id"]}'+'">'
+                item['model']=self.model
                 print( item["img"])    
         return result
 

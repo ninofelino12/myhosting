@@ -1,4 +1,4 @@
-from flask import Flask, Blueprint, render_template,jsonify,request,redirect,Response
+from flask import Flask, Blueprint, render_template,jsonify,request,redirect,Response, send_file
 import requests
 from myclass import Felino
 import sqlite3
@@ -29,8 +29,8 @@ odoo=Felino()
   #self.odoo  =  ODOO ('203.194.112.105',  port = 80 )
         #self.odoo  =  ODOO (self.server,  port = self.porta )
 try:
-    #odoo.connect('localhost',8015)
-    odoo.connect('203.194.112.105',16000)
+    odoo.connect('localhost',8015)
+    #odoo.connect('203.194.112.105',16000)
     odoo.logon()
 except Exception as e:
     print("Connection error:", e)    
@@ -151,7 +151,7 @@ def image(model,field,id):
        avatar_128= first_element.get(field, '')
        binary_image = base64.b64decode(avatar_128)
        print('simpan gambar')
-       with open(f'img/{id}-{model}-{field}.png', 'wb') as file:
+       with open(f'img/{model}-{id}.png', 'wb') as file:
             file.write(binary_image)
        return Response(binary_image, mimetype='image/png')
     else:
@@ -159,7 +159,12 @@ def image(model,field,id):
 
     return base64.b64decode(result[0].get(field))
 
+@app.route("/imagesql/<model>/<id>")
+def imagesql(model,id):
+    return   send_file(f'img/{model}-{id}.png', mimetype='image/png')   
+  
 
+     
 @app.route("/sql/<model>")
 def datasql(model):
     data=odoo.getJson(model)
