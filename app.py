@@ -169,7 +169,7 @@ def imagesql(model,id):
     return   send_file(f'img/{model}-{id}.png', mimetype='image/png')   
 
 @app.route("/getimage/<model>")
-def imagesqlget(model,id):
+def imagesqlget(model):
     return   send_file(f'img/{model}', mimetype='image/png')  
   
 
