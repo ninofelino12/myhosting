@@ -11,7 +11,9 @@ res.partner:
 product.product:   
        
      Name: "Partner"  
-     Fields: ['id','name','name','']  
+     Fields: 
+      - 'id'
+      - 'name'  
 product.category:
       Fields:
       - 'id'

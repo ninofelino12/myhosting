@@ -46,12 +46,12 @@ function geodoo(url) {
         // Do something with the data
         var htmlTable = '<table class="o_list_table table table-sm table-hover position-relative mb-0 o_list_table_ungrouped table-striped">';
         htmlTable += `<thead><tr>`;
-        for (const key in jsonData[0]) { htmlTable += `<th style="width:10px">${key}</th>` }
+        for (const key in jsonData[0]) { htmlTable += `<th style="width:10px" class="${key}">${key}</th>` }
         htmlTable += `</thead></tr>`;
         for (const item of jsonData) {
             htmlTable += `<tr class="o_data_row o_row_draggable">`
             for (const key in jsonData[0]) {
-                htmlTable += `<td class="o_data_cell cursor-pointer o_field_cell o_list_char o_required_modifier">${item[key]}</td>`;
+                htmlTable += `<td class="o_data_cell cursor-pointer o_field_cell o_list_char o_required_modifier ${key}" field="${key}">${item[key]}</td>`;
             }
             htmlTable += `</tr>`;
 
