@@ -63,11 +63,14 @@ def home():
     menu+=menuodoo('Partner','dataset/res.partner')
     menu+=menuodoo('Product Category','dataset/product.category')
     menu+=menuodoo('Product','dataset/product.product')
-    menu+=menuodoo('Product Variant','dataset/product.template')  
+    menu+=menuodoo('Product Template','dataset/product.template')  
     menu+=menuodoo('WareHouse','dataset/stock.warehouse')
+    menu+=menuodoo('Addons category','dataset/ir.module.category')
+    menu+=menuodoo('Addons','dataset/ir.module.module')
     menu+=menuodoo('Addons','dataset/ir.module.module')
     menu+=menuodoo('Report','dataset/ir.actions.report')
     menu+=menuodoo('View','dataset/ir.ui.view')
+    menu+=menuodoo('Model','dataset/ir.model')
 
     return render_template("index.html",menu=menu)
 
@@ -81,6 +84,8 @@ def dasboard():
     menu+=menuodoo('Addons','dataset/ir.module.module')
     menu+=menuodoo('Report','dataset/ir.actions.report')
     menu+=menuodoo('View','dataset/ir.ui.view')
+    menu+=menuodoo('Model','dataset/ir.ui.view')
+
 
     return render_template("dashboard.html",menu=menu)
 

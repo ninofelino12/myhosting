@@ -11,7 +11,7 @@ res.partner:
 product.product:   
        
      Name: "Partner"  
-     Fields: ['id','name','name']  
+     Fields: ['id','name','name','']  
 product.category:
       Fields:
       - 'id'
@@ -28,10 +28,19 @@ stock.warehouse:
      Fields:
       - 'id'
       - 'name'
+ir.module.category:
+      Fields:
+      - 'id'
+      - 'name'
+      - 'description'
+      -  'parent_id'
+      - 'module_ids'
 ir.module.module:
       Fields:
       - 'id'
       - 'name'
+      - 'description'
+      - 'category_id'
 ir.actions.report:
       Fields:
       - 'id'
@@ -39,4 +48,12 @@ ir.actions.report:
 ir.ui.view:
  Fields:
       - 'id'
+      - 'name'    
+ir.model: 
+      Fields:
+      - 'id'
       - 'name'     
+      - 'info'
+      - 'modules'
+      - 'view_ids'
+      - 'field_id'
