@@ -35,8 +35,8 @@ class Felino(ODOO):
         self.odoo  =  ODOO (server,  port = port ) 
         print(self.odoo.db.list())
 
-    def logon(self):
-        self.odoo.login(self.database,self.user,self.password)
+    def logon(self,database,user,password):
+        self.odoo.login(database,user,password)
 
     def record(self):
         self.lsrecord=self.odoo.env[self.model].search(self.search)
@@ -51,6 +51,7 @@ class Felino(ODOO):
            for item in result:
                 item["img"] = f'<img src="image/'+f'{self.model}/{self.images}/{item["id"]}'+'">'
                 item['model']=self.model
+
                 print( item["img"])    
         return result
 

@@ -11,9 +11,9 @@ from duckduckgo_search import *
 
 # [[pw{Ib=a1!J
 #web_bp = Blueprint("web", __name__, static_folder='web', static_url_path="/static")
-app = Flask(__name__)
-app.config['STATIC_FOLDER'] = 'static'
-#app.jinja_env.add_static_folder('templates', 'static')
+http = Flask(__name__)
+http.config['STATIC_FOLDER'] = 'static'
+#http.jinja_env.add_static_folder('templates', 'static')
 cse_key = "f4d4e4f0e6b294bd7"  # Replace with your actual key
 cse_engine_id = "flaskodoo"  # Replace with your engine ID
 
@@ -31,7 +31,7 @@ odoo=Felino()
 try:
     odoo.connect('localhost',8015)
     #odoo.connect('203.194.112.105',16000)
-    odoo.logon()
+    odoo.logon('DEMO','admin','odooadmin')
 except Exception as e:
     print("Connection error:", e)    
 finally:
@@ -57,7 +57,7 @@ def listrecord(model,listrecord,field):
     result=odoo.execute(model, 'read',listrecord,field) 
     return result
 
-@app.route("/home")
+@http.route("/home")
 def home():
     menu=""
     menu+=menuodoo('Partner','dataset/res.partner')
@@ -74,7 +74,7 @@ def home():
 
     return render_template("index.html",menu=menu)
 
-@app.route("/dashboard")
+@http.route("/dashboard")
 def dasboard():
     menu=""
     menu+=menuodoo('Partner','dataset/res.partner')
@@ -90,36 +90,11 @@ def dasboard():
     return render_template("dashboard.html",menu=menu)
 
 
-@app.route("/")
+@http.route("/")
 def index():
     return '1'
 
-@app.route("/searchimage", methods=["GET", "POST"])
-def search_images():
-    if request.method == "POST":
-        query = request.form.get("query")
-        if not query:
-            return render_template("index.html", error="Masukkan kata kunci pencarian.")
-
-        url = f"https://www.googleapis.com/customsearch/v1?key={cse_key}&cx={cse_engine_id}&q={query}"
-        response = requests.get(url)
-
-        if response.status_code == 200:
-            results = response.json().get("items", [])
-            formatted_results = []
-            print(results)
-            for item in results:
-                if item.get("image"):
-                    title = item.get("title")
-                    link = item.get("image").get("link")
-                    thumbnail = item.get("image").get("thumbnailLink")
-                    formatted_results.append({"title": title, "link": link, "thumbnail": thumbnail})
-            return render_template("results.html", images=formatted_results)
-        else:
-            return render_template("index.html", error="Permintaan API gagal.")
-
-    return render_template("search.html")
-@app.route("/view")
+@http.route("/view")
 def view():
     id=1512
     # view=odoo.env['ir.ui.view'].search([('id','=','1512')])[0]
@@ -132,7 +107,7 @@ def view():
     print(xml_dict)
     return view.get('arch_base')
 
-@app.route("/addons")
+@http.route("/addons")
 def addons():
     model='ir.module.module'
     rec=record(model,[])
@@ -143,13 +118,12 @@ def addons():
     for recor in data:
         print(recor['name']) 
         recor['image']=f'/image?img={recor["id"]}'
-        result.append(recor)                
+        result.httpend(recor)                
     return jsonify(result)
 
-@app.route("/image/<model>/<field>/<id>")
+@http.route("/image/<model>/<field>/<id>")
 def image(model,field,id):
     gbr=odoo.image(model,field,id)
-    print(gbr)
     if len(gbr)>0:
        first_element = gbr[0]
        #avatar_128= first_element.get('image_1920', '')
@@ -164,24 +138,24 @@ def image(model,field,id):
 
     return base64.b64decode(result[0].get(field))
 
-@app.route("/imagesql/<model>/<id>")
+@http.route("/imagesql/<model>/<id>")
 def imagesql(model,id):
     return   send_file(f'img/{model}-{id}.png', mimetype='image/png')   
 
-@app.route("/getimage/<model>")
+@http.route("/getimage/<model>")
 def imagesqlget(model):
     return   send_file(f'img/{model}', mimetype='image/png')  
   
 
      
-@app.route("/sql/<model>")
+@http.route("/sql/<model>")
 def datasql(model):
     data=odoo.getJson(model)
     dataw=f'[{data[1:-1]}]'
     return dataw
 
 
-@app.route("/dataset/<model>")
+@http.route("/dataset/<model>")
 def dataset(model):
    with open('app.yaml', 'r') as file:
         data = yaml.safe_load(file)
@@ -217,32 +191,32 @@ def dataset(model):
 #    data=listrecord(model,rec,fields) 
    return jsonify(data)    
 #    return data
-@app.route("/respartner")
+@http.route("/respartner")
 def rubah():
     return redirect('/dataset/res.partner')
 
-@app.route("/addon")
+@http.route("/addon")
 def addon4():
     data=Felino()
     hasil=data.addons()
     print(hasil)
     return render_template("base.html",isi=hasil)
 
-@app.route("/warehouse")
+@http.route("/warehouse")
 def warehouse():
     data=Felino()
     hasil=data.warehouse()
     print(hasil)
     return render_template("base.html",isi=hasil)
 
-@app.route("/root")
+@http.route("/root")
 def rootjs():
     data=Felino()
     hasil=data.rootJson()
     print(hasil)
     return jsonify(hasil)
 
-@app.route('/search', methods=['GET', 'POST'])
+@http.route('/search', methods=['GET', 'POST'])
 def carih():
     # search_term = request.form['search_term']
     search_term='kucing'
@@ -253,6 +227,34 @@ def carih():
     # images = [image['image'] for image in search_results['ia_data']['results']]
     return render_template('result.html',images=search_results)
 
+@http.route('/prod')
+def iproducta():
+    categ_id = request.args.get("categ_id", type=int)
+    jenis = request.args.get("type")
+    if categ_id:
+        categories = odoo.odoo.env['product.product'].search([('categ_id','=',categ_id)])
+        categories = odoo.odoo.execute('product.product', 'read', categories, ['id','name','categ_id'])
+        if jenis:
+           html="<table>"
+           for item in categories:
+               link=f'{item["categ_id"]}'
+               html+=f'<tr><td>{item["name"]}</td><td><a href="{link}">{item["categ_id"]}</a></td></tr>'
+               
+           return html+'</table>'
+          
+    else:
+        categories = odoo.odoo.env['product.category'].search([])
+        categories = odoo.odoo.execute('product.category', 'read', categories, ['id','name','child_id','product_count','child_id'])
+        if jenis:
+           html="<table>"
+           for item in categories:
+               link=f'prod?categ_id={item["id"]}&type=html'
+               html+=f'<tr><td>{item["name"]}</td><td><a href="{link}">{item["product_count"]}</a></td><td>{item["child_id"]}</td></tr>'
+               
+           return html+'</table>'
+    return jsonify(categories)
+
+
 if __name__ == "__main__":
-    app.run()
+    http.run()
 
