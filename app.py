@@ -192,10 +192,41 @@ def dataset(model):
 #    data=listrecord(model,rec,fields) 
    return jsonify(data)    
 #    return data
-@http.route("/product")
-def rubah():
+@http.route("/product/<model>/<int:id>")
+def rubah(model,id):
+    data = {
+        "product.category": {
+            "search": [],
+            "fields": ["id", "name"],
+            "child"  : "product.product"
+        },
+        "product.product": {
+            "search": [("categ_id", "=", id)],
+            "fields": ["id", "name", "categ_id"],
+             "child"  : "product.template"
 
-    return render_template("product.html")
+        },
+        "product.template": {
+            "search": [],
+            "fields": ["id", "name"],
+             "child"  : "product.template"
+        }
+    }
+    model_data = data.get(model)
+    categories = odoo.odoo.env[model].search(model_data["search"])
+    categories = odoo.odoo.execute(model, 'read', categories, model_data["fields"])
+    for item in categories:
+        item["link"] = f"product/{model_data['child']}/{item['id']}"
+        item["ref"] = f"<a href='product/{model_data['child']}/{item['id']}'>a</a>'"
+   
+    
+
+    response = make_response(jsonify(categories))
+    response.headers['X-Custom-Header'] =json.dumps(model_data["fields"])
+    response.headers['link'] = '<a href="prod?product_id=${item.id}">${item.name}</a>)'
+    response.headers.add('Access-Control-Allow-Origin', '*') 
+    return response
+
    
 @http.route("/addon")
 def addon4():
@@ -227,39 +258,24 @@ def productObject():
     product_id = request.args.get("product_id")
     if categ_id:
         fields=['id','name','child_id','product_count','child_id']
-        html_template = '<tr><td>{name}</td><td><a href="{categ_id}">{categ_id}</a></td></tr>'
-        categories = odoo.odoo.env['product.product'].search([('categ_id','=',categ_id)])
+        model='product.product'
+        categories = odoo.odoo.env[model].search([('categ_id','=',categ_id)])
         categories = odoo.odoo.execute('product.product', 'read', categories, ['id','name','categ_id'])
-        if jenis:
-           link=f'prod?product_id='
-           categories = map(lambda item: f'<tr><td>{item["name"]}</td><td><a href="{link}{item["id"]}">{item["categ_id"]}</a></td></tr>', categories)
-           html="<table>"
-           html += ''.join(categories)+'</table>'   
-           return html
+     
     elif product_id:
-        link=f'prod?product_id='
-        fields=['id','name','child_id','product_count','child_id']
+        fields=['id','name','product_variant_id','product_variant_ids']
         categories = odoo.odoo.env['product.template'].search([])
-        categories = odoo.odoo.execute('product.template', 'read', categories, ['id','name','product_variant_id','product_variant_ids'])
-        # categories = map(lambda item: f'<tr><td>{item["name"]}</td><td><a href="{link}{item["id"]}">{item["name"]}</a></td><td>{item["product_variant_id"]}</td></tr>', categories)
-        # html="<table>"
-        # html += ''.join(categories)+'</table>' 
-        # return html
+        categories = odoo.odoo.execute('product.template', 'read', categories, fields)
+       
     else:
         
         fields=['id','name','child_id','product_count','child_id']
         categories = odoo.odoo.env['product.category'].search([])
         categories = odoo.odoo.execute('product.category', 'read', categories, fields)
-        if jenis:
-           html="<table>"
-           for item in categories:
-               link=f'prod?categ_id={item["id"]}&type=html'
-               html+=f'<tr><td>{item["name"]}</td><td><a href="{link}">{item["product_count"]}</a></td><td>{item["child_id"]}</td></tr>'
-               
-           return html+'</table>'
+       
     
     response = make_response(jsonify(categories))
-    response.headers['X-Custom-Header'] =json.dumps(fields)  
+    response.headers['X-Custom-Header'] =fields
     response.headers['link'] = '<a href="prod?product_id=${item.id}">${item.name}</a>)'
     response.headers.add('Access-Control-Allow-Origin', '*') 
     return response

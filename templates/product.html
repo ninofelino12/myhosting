@@ -1,3 +1,6 @@
+{% extends "base.html" %}
+
+{% block content %}
 <section>
 
   <div class="o-main-components-container">
@@ -20,6 +23,7 @@
     </div>
   </div>
 </section>
+
 
 
 
@@ -50,6 +54,9 @@
           case 'product.product':
             element.link = `<button onclick="fetchAndDisplayJson('prod?product_id=${element.id}','product.template','o_content' )">${element.name}</button>`;
             break;
+            case 'product.template':
+            element.link = `<img src='images/product.template/1'>`;
+            break; 
 
         }
 
@@ -70,7 +77,7 @@
   const targetElementId = 'o_content';
   fetchAndDisplayJson(urldb,'product.category', targetElementId);
 </script>
-
+{% endblock %}
 </script>
 
 </script>
