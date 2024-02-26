@@ -1,4 +1,4 @@
-from flask import Flask, Blueprint, render_template,jsonify,request,redirect,Response, send_file
+from flask import Flask, Blueprint, render_template,jsonify,request,redirect,Response, send_file, make_response
 import requests
 from myclass import Felino
 import sqlite3
@@ -7,23 +7,23 @@ import  odoorpc
 import base64
 import yaml
 from duckduckgo_search import *
+from dotenv import load_dotenv
+from flask_cors import CORS
+import os
 
-
-# [[pw{Ib=a1!J
-#web_bp = Blueprint("web", __name__, static_folder='web', static_url_path="/static")
 http = Flask(__name__)
+# CORS(http)
 http.config['STATIC_FOLDER'] = 'static'
 #http.jinja_env.add_static_folder('templates', 'static')
 cse_key = "f4d4e4f0e6b294bd7"  # Replace with your actual key
-cse_engine_id = "flaskodoo"  # Replace with your engine ID
-
-
-
-
-
-
-
-
+cse_engine_id = "flaskodoo"  # Replace with your engine 
+base_url = os.getenv("BASE_URL")
+base_odoo = os.getenv("ODOO")
+base_database    = os.getenv("DATABASE")
+base_port = os.getenv("PORT")
+base_user = os.getenv("ODOOUSER")
+base_pass = os.getenv("PASS")
+print(base_url)
 
 odoo=Felino()
   #self.odoo  =  ODOO ('203.194.112.105',  port = 80 )
@@ -31,7 +31,8 @@ odoo=Felino()
 try:
     odoo.connect('localhost',8015)
     #odoo.connect('203.194.112.105',16000)
-    odoo.logon('DEMO','admin','odooadmin')
+    print(base_pass)
+    odoo.logon(base_database,base_user,'odooadmin')
 except Exception as e:
     print("Connection error:", e)    
 finally:
@@ -191,10 +192,11 @@ def dataset(model):
 #    data=listrecord(model,rec,fields) 
    return jsonify(data)    
 #    return data
-@http.route("/respartner")
+@http.route("/product")
 def rubah():
-    return redirect('/dataset/res.partner')
 
+    return render_template("product.html")
+   
 @http.route("/addon")
 def addon4():
     data=Felino()
@@ -207,7 +209,7 @@ def warehouse():
     data=Felino()
     hasil=data.warehouse()
     print(hasil)
-    return render_template("base.html",isi=hasil)
+    return render_template("base.html",isi='isi')
 
 @http.route("/root")
 def rootjs():
@@ -216,35 +218,38 @@ def rootjs():
     print(hasil)
     return jsonify(hasil)
 
-@http.route('/search', methods=['GET', 'POST'])
-def carih():
-    # search_term = request.form['search_term']
-    search_term='kucing'
-    api_url = f"https://api.duckduckgo.com/?q={search_term}&format=json&iax=images&ia=images"
-    response = requests.get(api_url)
-    search_results = response.json()
-    print(search_results)
-    # images = [image['image'] for image in search_results['ia_data']['results']]
-    return render_template('result.html',images=search_results)
+
 
 @http.route('/prod')
-def iproducta():
+def productObject():
     categ_id = request.args.get("categ_id", type=int)
     jenis = request.args.get("type")
+    product_id = request.args.get("product_id")
     if categ_id:
+        fields=['id','name','child_id','product_count','child_id']
+        html_template = '<tr><td>{name}</td><td><a href="{categ_id}">{categ_id}</a></td></tr>'
         categories = odoo.odoo.env['product.product'].search([('categ_id','=',categ_id)])
         categories = odoo.odoo.execute('product.product', 'read', categories, ['id','name','categ_id'])
         if jenis:
+           link=f'prod?product_id='
+           categories = map(lambda item: f'<tr><td>{item["name"]}</td><td><a href="{link}{item["id"]}">{item["categ_id"]}</a></td></tr>', categories)
            html="<table>"
-           for item in categories:
-               link=f'{item["categ_id"]}'
-               html+=f'<tr><td>{item["name"]}</td><td><a href="{link}">{item["categ_id"]}</a></td></tr>'
-               
-           return html+'</table>'
-          
+           html += ''.join(categories)+'</table>'   
+           return html
+    elif product_id:
+        link=f'prod?product_id='
+        fields=['id','name','child_id','product_count','child_id']
+        categories = odoo.odoo.env['product.template'].search([])
+        categories = odoo.odoo.execute('product.template', 'read', categories, ['id','name','product_variant_id','product_variant_ids'])
+        # categories = map(lambda item: f'<tr><td>{item["name"]}</td><td><a href="{link}{item["id"]}">{item["name"]}</a></td><td>{item["product_variant_id"]}</td></tr>', categories)
+        # html="<table>"
+        # html += ''.join(categories)+'</table>' 
+        # return html
     else:
+        
+        fields=['id','name','child_id','product_count','child_id']
         categories = odoo.odoo.env['product.category'].search([])
-        categories = odoo.odoo.execute('product.category', 'read', categories, ['id','name','child_id','product_count','child_id'])
+        categories = odoo.odoo.execute('product.category', 'read', categories, fields)
         if jenis:
            html="<table>"
            for item in categories:
@@ -252,7 +257,12 @@ def iproducta():
                html+=f'<tr><td>{item["name"]}</td><td><a href="{link}">{item["product_count"]}</a></td><td>{item["child_id"]}</td></tr>'
                
            return html+'</table>'
-    return jsonify(categories)
+    
+    response = make_response(jsonify(categories))
+    response.headers['X-Custom-Header'] =json.dumps(fields)  
+    response.headers['link'] = '<a href="prod?product_id=${item.id}">${item.name}</a>)'
+    response.headers.add('Access-Control-Allow-Origin', '*') 
+    return response
 
 
 if __name__ == "__main__":
