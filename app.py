@@ -10,6 +10,7 @@ from duckduckgo_search import *
 from dotenv import load_dotenv
 from flask_cors import CORS
 import os
+import socket
 
 http = Flask(__name__)
 # CORS(http)
@@ -24,7 +25,13 @@ base_port = os.getenv("PORT")
 base_user = os.getenv("ODOOUSER")
 base_pass = os.getenv("PASS")
 print(base_url)
-
+local_ip = socket.gethostbyname(socket.gethostname())
+print(local_ip)
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+s.connect(("8.8.8.8", 80))
+local_ip = s.getsockname()[0]
+s.close()
+print(local_ip)
 odoo=Felino()
   #self.odoo  =  ODOO ('203.194.112.105',  port = 80 )
         #self.odoo  =  ODOO (self.server,  port = self.porta )
@@ -108,19 +115,7 @@ def view():
     print(xml_dict)
     return view.get('arch_base')
 
-@http.route("/addons")
-def addons():
-    model='ir.module.module'
-    rec=record(model,[])
-    image='icon_image';
-    data=listrecord(model,rec,['name','display_name','icon','reports_by_module',])
-    print(data)
-    result=[]
-    for recor in data:
-        print(recor['name']) 
-        recor['image']=f'/image?img={recor["id"]}'
-        result.httpend(recor)                
-    return jsonify(result)
+
 
 @http.route("/image/<model>/<field>/<id>")
 def image(model,field,id):
@@ -192,8 +187,21 @@ def dataset(model):
 #    data=listrecord(model,rec,fields) 
    return jsonify(data)    
 #    return data
+
+
+@http.route("/addons")
+def addons():
+    
+    model='ir.module.module'
+    fields=['name','display_name','icon','reports_by_module','description','application','web','sequence']
+              
+    return jsonify(result)
+
 @http.route("/product/<model>/<int:id>")
 def rubah(model,id):
+    if model=='home':
+       return render_template("productcategory.html")
+
     data = {
         "product.category": {
             "search": [],
@@ -212,11 +220,13 @@ def rubah(model,id):
              "child"  : "product.template"
         }
     }
+    with open('static/product.yaml', 'w') as file:
+         yaml.dump(data, file)
     model_data = data.get(model)
     categories = odoo.odoo.env[model].search(model_data["search"])
     categories = odoo.odoo.execute(model, 'read', categories, model_data["fields"])
     for item in categories:
-        item["link"] = f"product/{model_data['child']}/{item['id']}"
+        item["link"] = f"/product/{model_data['child']}/{item['id']}"
         item["ref"] = f"<a href='product/{model_data['child']}/{item['id']}'>a</a>'"
    
     
@@ -282,5 +292,5 @@ def productObject():
 
 
 if __name__ == "__main__":
-    http.run()
+    http.run(host='0.0.0.0', port=5000)
 

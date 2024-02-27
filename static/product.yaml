@@ -1,0 +1,23 @@
+product.category:
+  child: product.product
+  fields:
+  - id
+  - name
+  search: []
+product.product:
+  child: product.template
+  fields:
+  - id
+  - name
+  - categ_id
+  search:
+  - !!python/tuple
+    - categ_id
+    - '='
+    - 1
+product.template:
+  child: product.template
+  fields:
+  - id
+  - name
+  search: []

@@ -1,0 +1,74 @@
+{% extends "basemanual.html" %}
+
+{% block content %}
+<section>
+
+  <div class="o-main-components-container">
+    <h1>Product</h1>
+    <div class="o_DialogManager">Product</div>
+    <div class="o_ChatWindowManager flex-row-reverse d-flex"></div>
+    <div class="o_PopoverManager">PopoverManager</div>
+    <div class="o_effects_manager"></div>
+    <div class="o_dialog_container">
+      <div>o_dialog_container
+        <div id="o_content">Content</div>
+      </div>
+    </div>
+    <div class="o_notification_manager"></div>
+    <div></div>
+    <div class="o_notification_manager o_upload_progress_toast"></div>
+    <div class="o_popover_container"></div>
+    <div class="o_fullscreen_indication">
+      <p>Press <span>esc</span> to exit full screen</p>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+<script>
+  const server=`${window.location.hostname}:${window.location.port}`;
+  async function fetchAndDisplayJson(url,model, targetElementId) {
+    // alert(url);
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      const targetElement = document.getElementById(targetElementId);
+      if (!targetElement) {
+        throw new Error(`Element with ID "${targetElementId}" not found`);
+      }
+
+      // Process and display the data (replace with your desired logic)
+      let content = '';
+
+    
+
+      for (const item of data) {
+
+        content += `<p>${item.name} - <a href="${item.link}">LINK</a></p>`; // Example formatting
+      }
+      targetElement.innerHTML = content;
+    } catch (error) {
+      console.error('Error fetching or displaying data:', error);
+    }
+  }
+
+  // Example usage
+  
+ 
+ 
+ 
+  alert(server);
+  const urldb = '/product/product.category/1';
+  const targetElementId = 'o_content';
+  fetchAndDisplayJson(urldb,'product.category', targetElementId);
+</script>
+{% endblock %}
+</script>
+
+</script>
