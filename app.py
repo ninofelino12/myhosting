@@ -36,8 +36,8 @@ odoo=Felino()
   #self.odoo  =  ODOO ('203.194.112.105',  port = 80 )
         #self.odoo  =  ODOO (self.server,  port = self.porta )
 try:
-    odoo.connect('localhost',8015)
-    #odoo.connect('203.194.112.105',16000)
+    #odoo.connect('localhost',8015)
+    odoo.connect('203.194.112.105',16000)
     print(base_pass)
     odoo.logon(base_database,base_user,'odooadmin')
 except Exception as e:
@@ -232,8 +232,8 @@ def rubah(model,id):
     
 
     response = make_response(jsonify(categories))
-    response.headers['X-Custom-Header'] =json.dumps(model_data["fields"])
-    response.headers['link'] = '<a href="prod?product_id=${item.id}">${item.name}</a>)'
+    # response.headers['X-Custom-Header'] =json.dumps(model_data["fields"])
+    # response.headers['link'] = '<a href="prod?product_id=${item.id}">${item.name}</a>)'
     response.headers.add('Access-Control-Allow-Origin', '*') 
     return response
 

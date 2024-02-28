@@ -1,14 +1,37 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
 
 class _MyAppState extends State<MyApp> {
-  final productBloc = ProductBloc(productData); // Instantiate the BloC
+  String _productProductData = '';
+  String _productTemplateData = '';
 
-  @override
-  void dispose() {
-    productBloc.close(); // Close the BloC when the widget is disposed
-    super.dispose();
+  Future<void> _fetchData() async {
+    final productProductResponse = await http
+        .get(Uri.parse('http://localhost:5000/product/product.category/1'));
+    final productTemplateResponse = await http
+        .get(Uri.parse('http://localhost:5000/product/product.category/1'));
+
+    if (productProductResponse.statusCode == 200 &&
+        productTemplateResponse.statusCode == 200) {
+      setState(() {
+        _productProductData =
+            json.decode(productProductResponse.body).toString();
+        _productTemplateData =
+            json.decode(productTemplateResponse.body).toString();
+      });
+    } else {
+      throw Exception('Failed to load data');
+    }
   }
 
   @override
@@ -16,39 +39,22 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Product Data'),
-          actions: [
-            PopupMenuButton(
-              onSelected: (value) {
-                productBloc
-                    .add(LoadProductData(value as int)); // Dispatch event
-              },
-              itemBuilder: (context) => [
-                for (int i = 0; i < jsonUrls.length; i++)
-                  PopupMenuItem(
-                    value: i,
-                    child: Text('Data Set ${i + 1}'),
-                  ),
-              ],
-            ),
-          ],
+          title: Text('Display JSON Data'),
         ),
-        body: BlocBuilder<ProductBloc, ProductState>(
-          bloc: productBloc,
-          builder: (context, state) {
-            if (state is ProductLoading) {
-              return Center(child: CircularProgressIndicator());
-            } else if (state is ProductLoaded) {
-              final products = state.products;
-              return GridView.builder(
-                  // ... same as before, using products from state
-                  );
-            } else if (state is ProductError) {
-              return Center(text: Text(state.message));
-            } else {
-              return SizedBox(); // Handle unexpected states
-            }
-          },
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              ElevatedButton(
+                onPressed: _fetchData,
+                child: Text('Fetch Data'),
+              ),
+              SizedBox(height: 20),
+              Text('Product Product Data: $_productProductData'),
+              SizedBox(height: 20),
+              Text('Product Template Data: $_productTemplateData'),
+            ],
+          ),
         ),
       ),
     );
