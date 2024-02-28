@@ -18,8 +18,8 @@ class Felino(ODOO):
         self.images=''
         self.lsrecord=[]
         self.search=[]
-        self.server='localhost'
-        self.porta=8015
+        self.server='203.194.112.105'
+        self.porta=16000
         _name = 'my.model'
         #self.odoo  =  ODOO ('203.194.112.105',  port = 80 )
         #self.odoo  =  ODOO (self.server,  port = self.porta )
