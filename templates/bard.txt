@@ -1,5 +1,4 @@
-buatkan flueter untuk mengakses data dari 3 json files
-http://localhost:5000/product/home/1
+buatkan tutorial lengkap flutter untuk mengakses data dari 3 json dari url
 http://localhost:5000/product/product.product/home/1
 http://localhost:5000/product/product.template/1
 ditampilkan secara gridview
