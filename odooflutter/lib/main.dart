@@ -1,61 +1,110 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:odoo_rpc/odoo_rpc.dart';
 
-void main() {
+final orpc = OdooClient('http://203.194.112.105:16000');
+void main() async {
+  await orpc.authenticate('DEMO', 'admin', 'odooadmin');
   runApp(MyApp());
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   @override
-  _MyAppState createState() => _MyAppState();
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: HomePage(),
+    );
+  }
 }
 
-class _MyAppState extends State<MyApp> {
-  String _productProductData = '';
-  String _productTemplateData = '';
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
 
-  Future<void> _fetchData() async {
-    final productProductResponse = await http
-        .get(Uri.parse('http://localhost:5000/product/product.category/1'));
-    final productTemplateResponse = await http
-        .get(Uri.parse('http://localhost:5000/product/product.category/1'));
+class _HomePageState extends State<HomePage> {
+  String _selectedTable = 'product.product'; // Default selected table
 
-    if (productProductResponse.statusCode == 200 &&
-        productTemplateResponse.statusCode == 200) {
-      setState(() {
-        _productProductData =
-            json.decode(productProductResponse.body).toString();
-        _productTemplateData =
-            json.decode(productTemplateResponse.body).toString();
-      });
-    } else {
-      throw Exception('Failed to load data');
+  Future<dynamic> fetchData(String tableName) {
+    List<String> fields = [];
+
+    if (tableName == 'res.partner') {
+      fields = ['id', 'name', 'email', '__last_update', 'image_128'];
+    } else if (tableName == 'product.template') {
+      fields = ['id', 'name'];
     }
+
+    return orpc.callKw({
+      'model': tableName,
+      'method': 'search_read',
+      'args': [],
+      'kwargs': {
+        'context': {'bin_size': true},
+        'domain': [],
+        'fields': fields,
+        'limit': 80,
+      },
+    });
+  }
+
+  Widget buildListItem(Map<String, dynamic> record) {
+    var unique = record['__last_update'] as String;
+    unique = unique.replaceAll(RegExp(r'[^0-9]'), '');
+    final avatarUrl =
+        '${orpc.baseURL}/web/image?model=res.partner&field=image_128&id=${record["id"]}&unique=$unique';
+    return ListTile(
+      leading: CircleAvatar(backgroundImage: NetworkImage(avatarUrl)),
+      title: Text(record['name']),
+      // subtitle: Text(record['email'] is String ? record['email'] : ''),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Display JSON Data'),
-        ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              ElevatedButton(
-                onPressed: _fetchData,
-                child: Text('Fetch Data'),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Contacts'),
+        actions: <Widget>[
+          PopupMenuButton<String>(
+            onSelected: (String result) {
+              setState(() {
+                print(result);
+                _selectedTable = result;
+              });
+            },
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+              const PopupMenuItem<String>(
+                value: 'res.partner',
+                child: Text('res.partner'),
               ),
-              SizedBox(height: 20),
-              Text('Product Product Data: $_productProductData'),
-              SizedBox(height: 20),
-              Text('Product Template Data: $_productTemplateData'),
+              const PopupMenuItem<String>(
+                value: 'product.template',
+                child: Text('product.product'),
+              ),
             ],
           ),
-        ),
+        ],
+      ),
+      body: Center(
+        child: FutureBuilder(
+            future: fetchData(_selectedTable),
+            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+              if (snapshot.hasData) {
+                return ListView.builder(
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (context, index) {
+                      final record =
+                          snapshot.data[index] as Map<String, dynamic>;
+                      return buildListItem(record);
+                    });
+              } else {
+                if (snapshot.hasError) return Text('Unable to fetch data');
+                return CircularProgressIndicator();
+              }
+            }),
       ),
     );
   }
